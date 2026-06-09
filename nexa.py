@@ -7,12 +7,21 @@ import os
 
 
 def speak(text):
-    print("Nexa:", text)
+    print("Jarvis:", text)
 
-    local_engine = pyttsx3.init()
-    local_engine.say(text)
-    local_engine.runAndWait()
+    engine = pyttsx3.init()
 
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)
+
+    engine.setProperty('rate', 170)
+    engine.setProperty('volume', 1.0)
+
+    engine.say(text)
+    engine.runAndWait()
+
+    engine.stop()
+    
 def listen():
     r = sr.Recognizer()
 
@@ -22,18 +31,23 @@ def listen():
         try:
             r.adjust_for_ambient_noise(source, duration=0.5)
             audio = r.listen(source, timeout=10)
+            import time
+            time.sleep(1)
             text = r.recognize_google(audio)
 
             print("You:", text)
             return text.lower()
 
-        except:
+        except Exception as e:
+            print("ERROR:", e)
             return None
 
 print("Nexa is sleeping...")
 print("Press F8 to activate")
 
 keyboard.wait("f8")
+
+speak("Hello Jezreen, this is a test")
 
 speak("Nexa Activated")
 
@@ -95,6 +109,28 @@ while True:
         now = datetime.datetime.now().strftime("%H:%M")
         speak("Current time is " + now)
 
+    # Google Search
+    elif "search" in user:
+
+        query = user.replace("search", "").strip()
+
+        speak("Searching for " + query)
+
+        webbrowser.open(
+        "https://www.google.com/search?q=" + query
+    )
+        
+    # YouTube Play
+    elif "play" in user:
+
+        song = user.replace("play", "").strip()
+
+        speak("Playing " + song)
+
+        webbrowser.open(
+        "https://www.youtube.com/results?search_query=" + song
+    )
+
     # Date
     elif "date" in user:
         today = datetime.datetime.now().strftime("%d-%m-%Y")
@@ -111,6 +147,22 @@ while True:
     elif "explorer" in user or "file explorer" in user or "folder" in user:
         speak("Opening File Explorer")
         os.system("explorer")
+
+    elif "desktop" in user:
+        speak("Opening Desktop")
+        os.startfile(os.path.join(os.path.expanduser("~"), "Desktop"))
+
+    elif "downloads" in user:
+        speak("Opening Downloads")
+        os.startfile(os.path.join(os.path.expanduser("~"), "Downloads"))
+
+    elif "documents" in user:
+        speak("Opening Documents")
+        os.startfile(os.path.join(os.path.expanduser("~"), "Documents"))
+
+    elif "pictures" in user:
+        speak("Opening Pictures")
+        os.startfile(os.path.join(os.path.expanduser("~"), "Pictures"))
 
     # Calculator
     elif "calculator" in user:
