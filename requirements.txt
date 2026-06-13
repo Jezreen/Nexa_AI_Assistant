@@ -3,3 +3,8 @@ pyttsx3
 keyboard
 pyaudio
 pywhatkit
+SpeechRecognition
+pyttsx3
+keyboard
+pyaudio
+pywhatkit
